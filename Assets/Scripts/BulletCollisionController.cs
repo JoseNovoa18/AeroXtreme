@@ -16,9 +16,8 @@ public class BulletCollisionController : MonoBehaviour
 
     public ParticleSystem collisionParticles;
 
-
-    //public GameObject winPlayer1;
-    //public GameObject winPlayer2;
+    public GameObject restartButton;
+    public GameObject winPlayer;
 
     void Start()
     {
@@ -49,6 +48,8 @@ public class BulletCollisionController : MonoBehaviour
                 Debug.Log("Se muere");
                 Destroy(enemyPlayer);
                 background.gameObject.SetActive(false);
+                restartButton.SetActive(true);
+                winPlayer.gameObject.SetActive(true);                
             }
             Destroy(gameObject);            
         }
