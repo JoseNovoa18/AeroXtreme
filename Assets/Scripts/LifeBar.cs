@@ -23,7 +23,7 @@ public class LifeBar : MonoBehaviour
     {
         lifeBar.fillAmount = actualLife / maximumLife;
     }
-        private void OnDisable()
+    private void OnDisable()
     {
         actualLife = initialActualLife;
         maximumLife = initialMaximumLife;

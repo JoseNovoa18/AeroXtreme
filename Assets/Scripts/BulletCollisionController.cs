@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BulletCollisionController : MonoBehaviour
 {
@@ -8,6 +9,16 @@ public class BulletCollisionController : MonoBehaviour
     public GameObject enemyPlayer;
 
     private LifeBar lifeBarScript;
+
+    public Image background;
+
+    [SerializeField] private AudioClip explosion;
+
+    public ParticleSystem collisionParticles;
+
+
+    //public GameObject winPlayer1;
+    //public GameObject winPlayer2;
 
     void Start()
     {
@@ -18,23 +29,15 @@ public class BulletCollisionController : MonoBehaviour
         if (enemyPlayer == null)
         {
             Debug.Log("Jugador enemigo eliminado");
-            return;
         }
 
         if (collision.gameObject.CompareTag("Player" + enemyPlayerID))
         {
+            AudioSource soundSource = SoundController.Instance.GetComponent<AudioSource>();
+            soundSource.volume = 0.2f;
+            soundSource.PlayOneShot(explosion);
+            PlayCollisionEffect(collision);
             Debug.Log(enemyPlayer.GetComponent<LifeBar>().actualLife);
-            //Debug.Log("Choco con el enemigo " + collision.gameObject.name);
-            /*
-            enemyPlayer.GetComponent<LifeBar>().actualLife -= enemyPlayer.GetComponent<LifeBar>().damage;
-            // Destruir el enemigo
-            if (enemyPlayer.GetComponent<LifeBar>().actualLife == 0)
-            {
-                Debug.Log("Se muere");
-                Destroy(collision.gameObject);
-            }
-            Destroy(gameObject);
-            */
             lifeBarScript.actualLife -= lifeBarScript.damage;
 
             // Actualizar fillAmount en el script LifeBar
@@ -45,12 +48,32 @@ public class BulletCollisionController : MonoBehaviour
             {
                 Debug.Log("Se muere");
                 Destroy(enemyPlayer);
+                background.gameObject.SetActive(false);
             }
             Destroy(gameObject);            
         }
-        if (collision.gameObject.CompareTag("Walls"))
+
+        if (collision.gameObject.CompareTag("Walls") || collision.gameObject.CompareTag("Obstacles"))
         {
+            AudioSource soundSource = SoundController.Instance.GetComponent<AudioSource>();
+            soundSource.volume = 0.15f;
+            soundSource.PlayOneShot(explosion);
+            //SoundController.Instance.PlaySound(explosion);
+            PlayCollisionEffect(collision);
             Destroy(gameObject);
+        }
+
+        void PlayCollisionEffect(Collision collision)
+        {
+            // Obtén el punto de colisión para activar el efecto en esa posición
+            Vector3 collisionPoint = collision.contacts[0].point;
+
+            // Instancia y reproduce el sistema de partículas en el punto de colisión
+            ParticleSystem effect = Instantiate(collisionParticles, collisionPoint, Quaternion.identity);
+            effect.Play();
+
+            // Destruye el sistema de partículas después de un tiempo
+            Destroy(effect.gameObject, effect.main.duration);
         }
     }
 }

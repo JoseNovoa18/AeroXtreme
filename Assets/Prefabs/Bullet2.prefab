@@ -130,3 +130,7 @@ MonoBehaviour:
   enemyPlayerID: 1
   enemyPlayer: {fileID: 4753932330681671996, guid: b8116e1634c78764b92e1fd50d8bb3f6,
     type: 3}
+  background: {fileID: 0}
+  explosion: {fileID: 8300000, guid: 8354b7c4e4da1a844807770949e0db04, type: 3}
+  collisionParticles: {fileID: 2347391921392164766, guid: e73965875b3e26845b9160924bc5e9a1,
+    type: 3}
